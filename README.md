@@ -8,7 +8,8 @@
 
 | Skill | 解决的问题 |
 | --- | --- |
-| system_prompt_design | 系统提示词与工具定义的设计、重构、注入加固与消融验收 |
+| [system-prompt-design](system-prompt-design/README.md) | 系统提示词与工具定义的设计、重构、注入加固与消融验收 |
+| [agent-status-design](agent-status-design/README.md) | Agent 状态栏设计：工具计数与约束、TODO 跟踪、环境感知、注入位置与更新策略 |
 
 ## 为什么做这个
 
@@ -29,7 +30,7 @@ npx skills add JFeng2048/agent-design-skillls
 - 用户级：`~/.codebuddy/skills/技能名/`
 - 项目级：`.codebuddy/skills/技能名/`
 
-详细用法、脚本与模板说明见 [system_prompt_design/README.md](system_prompt_design/README.md)。
+详细用法、脚本与模板说明见 [system-prompt-design/README.md](system-prompt-design/README.md)。
 
 ## 参考来源
 
