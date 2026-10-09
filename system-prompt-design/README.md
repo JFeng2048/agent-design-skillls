@@ -4,6 +4,8 @@
 
 内容来源：作者在 Agent 系统提示词设计工作中的经验沉淀，方法层面受《深入理解 AI Agent》等著作启发。
 
+使用本 skill 时：**先自己把需求调研清楚**——项目代码/配置、文档检索、线上失败案例与实测，能自己确认的就自己确认；只有业务判定口径、产品取舍、权限边界这类**必须由人拍板**的决策才问用户，且一次不超过 3 个问题、每项带选项与推荐项（见 `references/information-gathering.md` 与 `assets/requirements_intake.md`）。
+
 推荐阅读（本 skill 只是流程化沉淀，原著更完整）：
 
 - 《深入理解 AI Agent：设计原理与工程实践》李博杰 — https://github.com/bojieli/ai-agent-book
@@ -37,7 +39,7 @@ CLI 也支持 SSH 地址与本地路径：
 
 ```bash
 npx skills add git@github.com:JFeng2048/agent-design-skillls.git
-npx skills add ./agent-design-skillls/system_prompt_design
+npx skills add ./agent-design-skillls/system-prompt-design
 ```
 
 ### 方式二：手动安装
@@ -52,9 +54,10 @@ npx skills add ./agent-design-skillls/system_prompt_design
 ## 目录结构
 
 ```
-system_prompt_design/
-├── SKILL.md                        主流程：9 步 SOP、新员工检验、交付前自检清单、反模式表
+system-prompt-design/
+├── SKILL.md                        主流程：调研步骤 + 9 步 SOP、新员工检验、自检清单、反模式表
 ├── references/                     按需加载的深度参考（不要一次性全读）
+│   ├── information-gathering.md    自主调研：项目勘察、文档检索、线上数据、什么才必须问用户
 │   ├── tone-and-persona.md         人格、语气、量化长度约束、失败姿态、大写强调纪律
 │   ├── structure-and-format.md     Markdown 管层次 + XML 管语义，顺序即优先级
 │   ├── sop-vs-rules.md             规则堆砌的 5 个诊断信号，改写为带分支的 SOP
@@ -64,15 +67,28 @@ system_prompt_design/
 │   ├── prompt-injection.md         三道上下文层防线、注入面清单、分层防御
 │   └── ablation-experiments.md     消融实验设计、观测指标、失效归因路径
 ├── assets/                         交付模板（填写后即为产物）
+│   ├── requirements_intake.md          设计输入表：调研事实、默认方案、待拍板决策
 │   ├── system_prompt_template.md       系统提示词骨架
 │   ├── business_rules_spec_template.md 业务规则规格（产品与工程的契约）
 │   └── tool_schema_template.md         工具定义 + 渐进式披露形态
-└── scripts/                        交付前体检脚本（Python 3.8 以上，仅用标准库）
+└── scripts/                        体检与调研脚本（Python 3.8 以上，仅用标准库）
+    ├── discover_prompt_context.py  项目调研：事实 + 证据 + 默认方案
     ├── lint_prompt.py              提示词静态体检
     └── check_prefix_stability.py   静态前缀字节级稳定性校验
 ```
 
 ## 脚本用法
+
+### discover_prompt_context.py：项目调研
+
+先从项目里取事实，再决定要不要问人。输出带 `文件:行` 证据的调研结果（区分**代码命中**与**仅在文档中提及**），并推断可直接落地的默认方案（现有提示词沿用/新建、工具治理方式、静态前缀动态字段风险、few-shot 处理、注入防御缺口、语言）。
+
+```bash
+python scripts/discover_prompt_context.py <项目目录>
+python scripts/discover_prompt_context.py <项目目录> --json
+# 扫描包含本工具自身的目录时，跳过工具自身避免自匹配噪声
+python scripts/discover_prompt_context.py <项目目录> --exclude scripts/discover_prompt_context.py
+```
 
 ### lint_prompt.py：提示词静态体检
 
